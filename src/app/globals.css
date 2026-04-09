@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 10, 10, 10;
+  --background-end-rgb: 0, 0, 0;
+
+  --lancer-orange: #ff6b00;
+  --lancer-green: #00ff41;
+  --lancer-blue: #00d1ff;
+}
+
+@layer base {
+  body {
+    @apply bg-space-black text-white selection:bg-lancer-orange/30;
+    font-feature-settings: "ss01", "ss02", "cv01", "cv02";
+  }
+}
+
+@layer components {
+  .hud-panel {
+    @apply bg-black/40 backdrop-blur-md border border-white/10 shadow-2xl;
+    clip-path: polygon(
+      0% 10px, 
+      10px 0%, 
+      calc(100% - 10px) 0%, 
+      100% 10px, 
+      100% calc(100% - 10px), 
+      calc(100% - 10px) 100%, 
+      10px 100%, 
+      0% calc(100% - 10px)
+    );
+  }
+
+  .hud-button {
+    @apply relative px-6 py-2 bg-transparent border border-lancer-blue/50 text-lancer-blue 
+           font-mono uppercase tracking-widest transition-all duration-300
+           hover:bg-lancer-blue hover:text-black hover:shadow-[0_0_20px_rgba(0,209,255,0.5)];
+    clip-path: polygon(
+      0 0,
+      100% 0,
+      100% calc(100% - 8px),
+      calc(100% - 8px) 100%,
+      0 100%
+    );
+  }
+}
+
+.scanlines {
+  background: linear-gradient(
+    to bottom,
+    rgba(18, 16, 16, 0) 50%,
+    rgba(0, 0, 0, 0.1) 50%
+  );
+  background-size: 100% 4px;
+  pointer-events: none;
+}
