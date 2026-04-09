@@ -12,9 +12,11 @@ export default function TerminalAccess() {
   const [isSignUp, setIsSignUp] = useState(false);
   const [status, setStatus] = useState<'IDLE' | 'LOADING' | 'ERROR' | 'SUCCESS'>('IDLE');
   const [message, setMessage] = useState('');
+  const [mounted, setMounted] = useState(false);
   const [uplinkState, setUplinkState] = useState<'STABLE' | 'OFFLINE'>('STABLE');
 
   useEffect(() => {
+    setMounted(true);
     if (!isUplinkStable()) {
       setUplinkState('OFFLINE');
     }
@@ -49,7 +51,10 @@ export default function TerminalAccess() {
         setStatus('SUCCESS');
         setMessage('Redirecting to tactical uplink...');
       }
-    } catch (err) {
+    } catch (err: any) {
+      if (err.message === 'NEXT_REDIRECT') {
+        return; // Next.js will handle the redirect
+      }
       setStatus('ERROR');
       setMessage('OMNINET_FETCH_FAILURE: Database connection unhealthy or offline.');
       console.error(err);
@@ -60,7 +65,7 @@ export default function TerminalAccess() {
     <div className="flex items-center justify-center min-h-screen p-4 bg-space-black">
       {/* Background Drifting Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(5)].map((_, i) => (
+        {mounted && [...Array(5)].map((_, i) => (
           <motion.div
             key={i}
             initial={{ 
@@ -134,9 +139,9 @@ export default function TerminalAccess() {
                 </p>
               </div>
               <div className="flex items-center gap-2">
-                <div className={`w-1 h-1 rounded-full ${(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY) ? 'bg-lancer-green' : 'bg-red-500'}`} />
+                <div className={`w-1 h-1 rounded-full ${(process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) ? 'bg-lancer-green' : 'bg-red-500'}`} />
                 <p className="text-zinc-500 text-[10px] font-mono uppercase tracking-widest">
-                  {(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY) ? '> ACCESS_KEY: DETECTED' : '> ACCESS_KEY: MISSING'}
+                  {(process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) ? '> ACCESS_KEY: DETECTED' : '> ACCESS_KEY: MISSING'}
                 </p>
               </div>
               <p className="text-zinc-500 text-[10px] font-mono">{`> CONNECTION_MODE: SSR_ASYNC`}</p>
