@@ -6,11 +6,11 @@ export async function createClient() {
 
   // During Vercel build/prerender, environment variables may be missing.
   // We provide placeholders to prevent @supabase/ssr from throwing a fatal error.
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co'
   const supabaseAnonKey =
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY ||
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
-    ''
+    'dummy-key'
 
   if (!supabaseUrl || !supabaseAnonKey) {
     // Optional: Log a warning during development if keys are missing
